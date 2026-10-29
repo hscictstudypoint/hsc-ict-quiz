@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Easy ICT for HSC | HSC ICT Online Quiz</title>
+<style>
+  :root{--brand:#155eef;--ink:#172033;--muted:#667085;--bg:#f4f7fb;--line:#e4e7ec}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans Bengali",sans-serif}
+  header{background:linear-gradient(135deg,#123a83,#155eef);color:white;padding:28px 16px;text-align:center}
+  header h1{margin:0 0 8px;font-size:clamp(24px,5vw,36px)}
+  header p{margin:0;opacity:.9}
+  main{max-width:850px;margin:22px auto;padding:0 14px 40px}
+  .card{background:white;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 4px 16px #1018280a}
+  h2{margin:0 0 14px;font-size:22px}
+  .muted{color:var(--muted);font-size:14px}
+  label.name-label{display:block;font-weight:700;margin-bottom:8px}
+  input[type=text]{width:100%;padding:12px;border:1px solid #cfd5df;border-radius:10px;font:inherit;margin-bottom:16px}
+  .question{padding:16px 0;border-top:1px solid var(--line)}
+  .question:first-of-type{border-top:0}
+  .question h3{font-size:17px;margin:0 0 12px}
+  .option{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin:8px 0;cursor:pointer}
+  .option:hover{background:#f8faff}
+  .option input{margin-top:5px}
+  button{border:0;border-radius:10px;background:var(--brand);color:white;padding:12px 18px;font:inherit;font-weight:700;cursor:pointer}
+  button.secondary{background:#eef4ff;color:#1746a2}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .result{font-size:22px;font-weight:800}
+  .review-item{padding:12px 0;border-top:1px solid var(--line)}
+  .correct{color:#067647}.wrong{color:#b42318}
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line)}
+  th{background:#f8fafc}
+  .pill{display:inline-block;background:#eef4ff;color:#1746a2;padding:5px 9px;border-radius:99px;font-size:12px;font-weight:700}
+  footer{text-align:center;color:var(--muted);padding:20px;font-size:13px}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="brandTitle">Easy ICT for HSC</h1>
+  <p>বিনামূল্যে ICT শিখি • অনলাইনে MCQ অনুশীলন করি</p>
+</header>
+<main>
+  <section class="card">
+    <span class="pill">Easy ICT for HSC • অধ্যায় ১</span>
+    <h2 style="margin-top:12px">সংখ্যা পদ্ধতির ইতিহাস ও ধারণা</h2>
+    <p class="muted">Easy ICT for HSC-এর পক্ষ থেকে বিনামূল্যে অনুশীলন কুইজ।</p>
+    <p class="muted">১০টি MCQ • প্রতিটি সঠিক উত্তরে ১ নম্বর</p>
+    <label class="name-label" for="studentName">তোমার নাম লিখো</label>
+    <input id="studentName" type="text" maxlength="40" placeholder="যেমন: Rahim Ahmed" autocomplete="name">
+    <div id="questions"></div>
+    <button id="submitBtn" onclick="submitQuiz()">Submit Quiz</button>
+    <p class="muted">নোট: এই প্রাথমিক ডেমোতে স্কোর এই ব্রাউজারেই সংরক্ষিত হবে। সবার জন্য একসঙ্গে অনলাইন লিডারবোর্ড চালু করতে ডেটাবেস সংযোগ করতে হবে।</p>
+  </section>
+  <section id="resultCard" class="card hidden" aria-live="polite">
+    <h2>তোমার ফলাফল</h2>
+    <p id="scoreText" class="result"></p>
+    <p id="resultSummary"></p>
+    <div id="review"></div>
+    <button class="secondary" onclick="resetQuiz()">আবার কুইজ দাও</button>
+  </section>
+  <section class="card">
+    <h2>🏆 Leaderboard (এই ডিভাইসের ডেমো)</h2>
+    <p class="muted">এখানে এই ব্রাউজারে জমা হওয়া ফলাফল দেখাবে। সবার ফলাফল এক জায়গায় দেখাতে পরের ধাপে cloud database যুক্ত করতে হবে।</p>
+    <div id="leaderboard"></div>
+  </section>
+</main>
+<footer><strong>Easy ICT for HSC</strong> • Free learning for everyone</footer>
+<script>
+const quiz = [
+ {q:"প্রাচীনকালে মানুষ গণনার জন্য কোনটি ব্যবহার করত?",o:["ক্যালকুলেটর","আঙুল","কম্পিউটার","মোবাইল ফোন"],a:1,e:"প্রাচীনকালে আঙুল, পাথর ও দাগের সাহায্যে গণনা করা হতো।"},
+ {q:"শূন্যের বিকাশ ও দশমিক স্থানীয় মান পদ্ধতিতে কোন সভ্যতার গুরুত্বপূর্ণ অবদান রয়েছে?",o:["ভারতীয়","গ্রিক","রোমান","ফিনিশীয়"],a:0,e:"শূন্য ও দশমিক স্থানীয় মান পদ্ধতির বিকাশে ভারতীয় গণিতবিদদের গুরুত্বপূর্ণ অবদান রয়েছে।"},
+ {q:"বাইনারি সংখ্যা পদ্ধতির ভিত্তি কত?",o:["৮","১০","২","১৬"],a:2,e:"বাইনারি পদ্ধতিতে শুধু ০ ও ১—এই দুটি অঙ্ক ব্যবহৃত হয়।"},
+ {q:"আধুনিক বাইনারি পাটিগণিত নিয়ে গুরুত্বপূর্ণ কাজ করেন কোন বিজ্ঞানী?",o:["চার্লস ব্যাবেজ","গটফ্রিড উইলহেলম লাইবনিজ","ব্লেইজ প্যাসকেল","জন নেপিয়ার"],a:1,e:"লাইবনিজ ১৭শ শতকে বাইনারি পাটিগণিতের বিকাশে গুরুত্বপূর্ণ অবদান রাখেন।"},
+ {q:"রোমান সংখ্যা পদ্ধতিতে C-এর মান কত?",o:["10","50","100","500"],a:2,e:"রোমান সংখ্যায় C = 100।"},
+ {q:"দশমিক সংখ্যা পদ্ধতিতে কয়টি মৌলিক অঙ্ক আছে?",o:["২টি","৮টি","১০টি","১৬টি"],a:2,e:"দশমিক পদ্ধতিতে ০ থেকে ৯ পর্যন্ত মোট ১০টি অঙ্ক আছে।"},
+ {q:"অক্টাল সংখ্যা পদ্ধতির ভিত্তি কত?",o:["২","৮","১০","১৬"],a:1,e:"অক্টাল পদ্ধতিতে ০ থেকে ৭ পর্যন্ত ৮টি অঙ্ক ব্যবহৃত হয়।"},
+ {q:"হেক্সাডেসিমেল পদ্ধতিতে দশমিক ১০-এর প্রতীক কোনটি?",o:["A","B","C","F"],a:0,e:"হেক্সাডেসিমেলে A থেকে F যথাক্রমে ১০ থেকে ১৫ বোঝায়।"},
+ {q:"কম্পিউটারে তথ্যের মৌলিক উপস্থাপনায় কোন সংখ্যা পদ্ধতি ব্যবহৃত হয়?",o:["রোমান","দশমিক","বাইনারি","শুধু অক্টাল"],a:2,e:"ডিজিটাল সার্কিটের দুইটি অবস্থা দিয়ে ০ ও ১ প্রকাশ করা যায়, তাই বাইনারি মৌলিক।"},
+ {q:"হেক্সাডেসিমেল সংখ্যা পদ্ধতির ভিত্তি কত?",o:["৮","১০","১২","১৬"],a:3,e:"হেক্সাডেসিমেল পদ্ধতিতে ০–৯ এবং A–F মিলিয়ে ১৬টি প্রতীক ব্যবহৃত হয়."}
+];
+const letters=["A","B","C","D"];
+function renderQuestions(){
+ const host=document.getElementById("questions");
+ host.innerHTML=quiz.map((item,i)=>`<div class="question"><h3>${i+1}. ${item.q}</h3>${item.o.map((op,j)=>`<label class="option"><input type="radio" name="q${i}" value="${j}"><span><b>${letters[j]}.</b> ${op}</span></label>`).join("")}</div>`).join("");
+}
+function getScores(){try{return JSON.parse(localStorage.getItem("hscIctDemoScores")||"[]")}catch(e){return []}}
+function saveScores(scores){localStorage.setItem("hscIctDemoScores",JSON.stringify(scores))}
+function submitQuiz(){
+ const name=document.getElementById("studentName").value.trim();
+ if(!name){alert("আগে তোমার নাম লিখো।");document.getElementById("studentName").focus();return}
+ let score=0,answered=0;
+ const review=quiz.map((item,i)=>{
+  const chosen=document.querySelector(`input[name="q${i}"]:checked`);
+  const val=chosen?Number(chosen.value):-1;
+  if(val!==-1)answered++;
+  const ok=val===item.a;if(ok)score++;
+  return `<div class="review-item"><b>${i+1}. ${item.q}</b><p class="${ok?"correct":"wrong"}">${val===-1?"উত্তর দেওয়া হয়নি":ok?"তোমার উত্তর সঠিক":"তোমার উত্তর: "+letters[val]+". "+item.o[val]}</p><p><b>সঠিক উত্তর:</b> ${letters[item.a]}. ${item.o[item.a]}</p><p class="muted">${item.e}</p></div>`;
+ }).join("");
+ document.getElementById("scoreText").textContent=`${score} / ${quiz.length}`;
+ document.getElementById("resultSummary").textContent=`${name}, তুমি ${answered}টি প্রশ্নের উত্তর দিয়েছ। সঠিক: ${score}টি, ভুল/উত্তরহীন: ${quiz.length-score}টি।`;
+ document.getElementById("review").innerHTML=review;
+ document.getElementById("resultCard").classList.remove("hidden");
+ const scores=getScores();scores.push({name,score,total:quiz.length,date:new Date().toISOString()});saveScores(scores);
+ renderLeaderboard();
+ document.getElementById("submitBtn").disabled=true;
+ document.getElementById("resultCard").scrollIntoView({behavior:"smooth"});
+}
+function renderLeaderboard(){
+ const scores=getScores().sort((a,b)=>b.score-a.score||a.date.localeCompare(b.date)).slice(0,10);
+ const host=document.getElementById("leaderboard");
+ if(!scores.length){host.innerHTML='<p class="muted">এখনো কোনো ডেমো ফলাফল নেই। কুইজ দিয়ে প্রথম ফলাফল যোগ করো।</p>';return}
+ host.innerHTML=`<table><thead><tr><th>র‍্যাঙ্ক</th><th>নাম</th><th>স্কোর</th></tr></thead><tbody>${scores.map((s,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(s.name)}</td><td>${s.score}/${s.total}</td></tr>`).join("")}</tbody></table>`;
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function resetQuiz(){
+ document.querySelectorAll('input[type="radio"]').forEach(x=>x.checked=false);
+ document.getElementById("studentName").value="";
+ document.getElementById("resultCard").classList.add("hidden");
+ document.getElementById("submitBtn").disabled=false;
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+renderQuestions();renderLeaderboard();
+</script>
+</body>
+</html>
